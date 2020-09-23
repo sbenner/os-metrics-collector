@@ -11,6 +11,8 @@ Processor Temperature Metrics sender/saver
 $ git clone https://github.com/sbenner/os-metrics-collector.git
 $ cd os-metrics-collector
 $ ./build_and_run.sh
+$ tail -f producer/target/nohup.out
+$ tail -f consumer/target/nohup.out
 ```
 This will basically run the producer and consumer
 

@@ -25,7 +25,7 @@ public class PostgresService {
      *
      * @return a Connection object
      */
-    public static Connection connect() throws SQLException {
+    public static synchronized Connection connect() throws SQLException {
 
         if (connection == null ||
                 connection.isClosed()) {

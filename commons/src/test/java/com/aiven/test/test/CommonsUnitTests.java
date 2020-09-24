@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 
 import static org.junit.Assert.*;
 
@@ -70,9 +71,10 @@ public class CommonsUnitTests {
         m.setSystemId("test");
         m.setTemperature(new BigDecimal("32.32"));
         m.setTs(System.currentTimeMillis());
-        Mockito.when(service.insertMetric(m)).thenReturn("test");
+        Semaphore semaphore = new Semaphore(1);
+        Mockito.when(service.insertMetric(m, semaphore)).thenReturn("test");
 
-        String value = service.insertMetric(m);
+        String value = service.insertMetric(m, semaphore);
         assertEquals(value, "test");
 
     }

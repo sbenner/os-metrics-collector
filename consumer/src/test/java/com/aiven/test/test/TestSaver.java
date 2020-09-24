@@ -3,7 +3,6 @@ package com.aiven.test.test;
 import com.aiven.test.commons.model.Metric;
 import com.aiven.test.consumer.converter.MetricConverter;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

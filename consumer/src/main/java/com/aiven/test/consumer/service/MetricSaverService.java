@@ -9,6 +9,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.json.JSONObject;
 
 import java.time.Duration;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
 public class MetricSaverService implements Runnable {
 
     private static final Logger logger = Logger.getLogger(MetricSaverService.class.getName());
-
+    private static final Semaphore semaphore = new Semaphore(5);
     private final PostgresService postgresService;
     private final MetricConverter converter;
     private final Consumer kafkaConsumer;
@@ -36,7 +37,6 @@ public class MetricSaverService implements Runnable {
 
     }
 
-
     @Override
     public void run() {
 
@@ -50,10 +50,16 @@ public class MetricSaverService implements Runnable {
                 if (consumerRecords.count() > 0)
                     consumerRecords.forEach(record -> {
 
+                        try {
+                            semaphore.acquire();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         ContextProvider.getExecutor().submit(
                                 new Thread(() -> {
 
                                     try {
+
                                         logger.info(String.format("Consumer Record:(%s, %s, %d, %d)",
                                                 record.key(),
                                                 record.value(),
@@ -61,9 +67,11 @@ public class MetricSaverService implements Runnable {
                                         JSONObject object = new JSONObject(record.value());
                                         Metric m = converter.toObject(object);
                                         if (m != null)
-                                            postgresService.insertMetric(m);
+                                            postgresService.insertMetric(m, semaphore);
                                     } catch (Exception e) {
                                         logger.log(Level.SEVERE, e.getMessage(), e);
+                                    } finally {
+                                        //semaphore.release();
                                     }
 
 

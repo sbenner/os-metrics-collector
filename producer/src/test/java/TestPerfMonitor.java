@@ -1,6 +1,4 @@
 import com.aiven.test.commons.ContextProvider;
-import com.aiven.test.commons.model.Metric;
-
 import com.aiven.test.commons.service.KafkaService;
 import com.aiven.test.producer.service.PerformanceMonitor;
 import org.json.JSONObject;
@@ -8,8 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.MockitoAnnotations;
-
 
 import java.io.IOException;
 
